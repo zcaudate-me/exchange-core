@@ -224,8 +224,8 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
             case SINGLE_USER_REPORT:
                 return reportSingleUser((SingleUserReportQuery) reportQuery);
 
-            /*case TOTAL_CURRENCY_BALANCE:
-                return reportGlobalBalance();*/
+            case TOTAL_CURRENCY_BALANCE:
+                return reportGlobalBalance();
 
             default:
                 throw new IllegalStateException("Report not implemented");
@@ -247,7 +247,7 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
             return Optional.empty();
         }
     }
-/*
+
     private Optional<TotalCurrencyBalanceReportResult> reportGlobalBalance() {
 
         // prepare fast price cache for profit estimation with some price (exact value is not important, except ask==bid condition)
@@ -276,7 +276,7 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
 
         return Optional.of(new TotalCurrencyBalanceReportResult(currencyBalance, new LongLongHashMap(fees), null, symbolOpenInterestLong, symbolOpenInterestShort));
     }
-*/
+
     /**
      * Post process command
      *

@@ -426,6 +426,14 @@ public final class Utils {
         return res;
     }
 
+    public static LongLongHashMap mergeSum(final LongLongHashMap a, final LongLongHashMap b) {
+        final LongLongHashMap res = a == null ? new LongLongHashMap() : new LongLongHashMap(a);
+        if (b != null) {
+            b.forEachKeyValue(res::addToValue);
+        }
+        return res;
+    }
+
     public static boolean checkStreamsEqual(Stream<?> s1, Stream<?> s2) {
         Iterator<?> iter1 = s1.iterator(), iter2 = s2.iterator();
         while (iter1.hasNext() && iter2.hasNext()) {

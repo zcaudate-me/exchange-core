@@ -13,8 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.bytes.WriteBytesMarshallable;
 import org.apache.commons.lang3.tuple.Pair;
-import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongLongHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.LongObjectHashMap;
 
 import java.util.Objects;
@@ -164,7 +163,7 @@ public final class MatchingEngineRouter implements WriteBytesMarshallable, State
 
     private Optional<TotalCurrencyBalanceReportResult> reportGlobalBalance() {
 
-        final IntLongHashMap currencyBalance = new IntLongHashMap();
+        final LongLongHashMap currencyBalance = new LongLongHashMap();
 
         orderBooks.stream()
                 .filter(ob -> ob.getSymbolSpec().type == SymbolType.CURRENCY_EXCHANGE_PAIR)
