@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.distribution.ParetoDistribution;
 import org.apache.commons.math3.distribution.RealDistribution;
 import org.apache.commons.math3.random.JDKRandomGenerator;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongObjectHashMap;
 import kmi.exchange.beans.CoreSymbolSpecification;
 import kmi.exchange.beans.SymbolType;
 
@@ -66,14 +66,14 @@ public final class UserCurrencyAccountsGenerator {
      */
 
     // symbol -> uid's having both currencies
-    public static IntObjectHashMap<int[]> assignSymbolsToUsers(List<BitSet> users2currencies, List<CoreSymbolSpecification> symbols, double[] distribution, int totalMessagesExpected) {
+    public static LongObjectHashMap<int[]> assignSymbolsToUsers(List<BitSet> users2currencies, List<CoreSymbolSpecification> symbols, double[] distribution, int totalMessagesExpected) {
 
         final double distrSum = Arrays.stream(distribution).sum();
         if (Math.abs(distrSum - 1.0) > 0.001) {
             throw new IllegalArgumentException("Distribution is not weighted, sum=" + distrSum);
         }
 
-        IntObjectHashMap<int[]> symbolsToUsers = new IntObjectHashMap<>(symbols.size());
+        LongObjectHashMap<int[]> symbolsToUsers = new LongObjectHashMap<>(symbols.size());
 
         final Random rand = new Random(1);
 
@@ -174,7 +174,7 @@ public final class UserCurrencyAccountsGenerator {
 //
 //
 //        t = System.currentTimeMillis();
-//        IntObjectHashMap<int[]> ints1 = assignSymbolsToUsers(users2currencies, specs, TestOrdersGenerator.createWeightedDistribution(specs.size()), 10_000_000);
+//        LongObjectHashMap<int[]> ints1 = assignSymbolsToUsers(users2currencies, specs, TestOrdersGenerator.createWeightedDistribution(specs.size()), 10_000_000);
 //        System.out.println("Mapped to users in " + (System.currentTimeMillis() - t) + "ms");
 //
 //    }

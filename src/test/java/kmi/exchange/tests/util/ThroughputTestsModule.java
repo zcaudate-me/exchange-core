@@ -3,7 +3,7 @@ package kmi.exchange.tests.util;
 import kmi.exchange.core.ExchangeApi;
 import lombok.extern.slf4j.Slf4j;
 import net.openhft.affinity.AffinityLock;
-import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongLongHashMap;
 import kmi.exchange.beans.CoreSymbolSpecification;
 import kmi.exchange.beans.api.ApiCommand;
 import kmi.exchange.beans.api.ApiPersistState;
@@ -55,7 +55,7 @@ public class ThroughputTestsModule {
             for (int j = 0; j < iterations; j++) {
 
                 container.addSymbols(coreSymbolSpecifications);
-                final IntLongHashMap globalBalancesExpected = container.userAccountsInit(usersAccounts);
+                final LongLongHashMap globalBalancesExpected = container.userAccountsInit(usersAccounts);
 
                 assertThat(container.totalBalanceReport().getSum(), is(globalBalancesExpected));
 

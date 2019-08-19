@@ -3,7 +3,7 @@ package kmi.exchange.tests.util;
 import kmi.exchange.core.ExchangeApi;
 import lombok.extern.slf4j.Slf4j;
 import net.openhft.affinity.AffinityLock;
-import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongLongHashMap;
 import kmi.exchange.beans.CoreSymbolSpecification;
 import kmi.exchange.beans.api.ApiCommand;
 import kmi.exchange.beans.api.ApiPersistState;
@@ -46,7 +46,7 @@ public class PersistenceTestsModule {
             final float originalPerfMt;
 
             // validate total balance as a sum of loaded funds
-            final IntLongHashMap globalBalancesExpected;
+            final LongLongHashMap globalBalancesExpected;
 
             try (final ExchangeTestContainer container = new ExchangeTestContainer(bufferSize, matchingEngines, riskEngines, msgsInGroupLimit, null)) {
 

@@ -6,7 +6,7 @@ import lombok.Getter;
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.bytes.WriteBytesMarshallable;
-import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongLongHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.LongObjectHashMap;
 import kmi.exchange.core.Utils;
 
@@ -14,14 +14,14 @@ import kmi.exchange.core.Utils;
 @Getter
 public class BatchAddAccountsCommand implements WriteBytesMarshallable {
 
-    private final LongObjectHashMap<IntLongHashMap> users;
+    private final LongObjectHashMap<LongLongHashMap> users;
 
     public BatchAddAccountsCommand(final BytesIn bytes) {
-        users = Utils.readLongHashMap(bytes, c -> Utils.readIntLongHashMap(bytes));
+        users = Utils.readLongHashMap(bytes, c -> Utils.readLongLongHashMap(bytes));
     }
 
     @Override
     public void writeMarshallable(BytesOut bytes) {
-        Utils.marshallLongHashMap(users, Utils::marshallIntLongHashMap, bytes);
+        Utils.marshallLongHashMap(users, Utils::marshallLongHashMap, bytes);
     }
 }

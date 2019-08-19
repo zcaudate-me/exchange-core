@@ -1,7 +1,7 @@
 package kmi.exchange.tests.integration;
 
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongLongHashMap;
 import org.junit.Test;
 import kmi.exchange.beans.*;
 import kmi.exchange.beans.api.*;
@@ -590,7 +590,7 @@ public final class ITExchangeCoreIntegration {
             container.usersInit(numUsers, allowedCurrencies);
 
             // validate total balance as a sum of loaded funds
-            final Consumer<IntLongHashMap> balancesValidator = balances -> allowedCurrencies.forEach(
+            final Consumer<LongLongHashMap> balancesValidator = balances -> allowedCurrencies.forEach(
                     cur -> assertThat(balances.get(cur), is(10_0000_0000L * numUsers)));
 
             balancesValidator.accept(container.totalBalanceReport().getSum());

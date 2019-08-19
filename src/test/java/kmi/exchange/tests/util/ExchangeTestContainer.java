@@ -6,7 +6,7 @@ import kmi.exchange.core.ExchangeCore;
 import kmi.exchange.core.Utils;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongLongHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.LongObjectHashMap;
 import org.hamcrest.core.Is;
 import kmi.exchange.beans.*;
@@ -150,7 +150,7 @@ public final class ExchangeTestContainer implements AutoCloseable {
         return (int) (System.nanoTime() & Integer.MAX_VALUE);
     }
 
-    public final IntLongHashMap userAccountsInit(List<BitSet> userCurrencies) throws InterruptedException {
+    public final LongLongHashMap userAccountsInit(List<BitSet> userCurrencies) throws InterruptedException {
 
         final int totalAccounts = userCurrencies.stream().skip(1).mapToInt(BitSet::cardinality).sum();
         final int numUsers = userCurrencies.size() - 1;
@@ -180,7 +180,7 @@ public final class ExchangeTestContainer implements AutoCloseable {
         consumer = cmd -> {
         };
 
-        final IntLongHashMap globalAmountPerCurrency = new IntLongHashMap();
+        final LongLongHashMap globalAmountPerCurrency = new LongLongHashMap();
         userCurrencies.forEach(user -> user.stream().forEach(cur -> globalAmountPerCurrency.addToValue(cur, amountToAdd)));
         return globalAmountPerCurrency;
     }
@@ -232,9 +232,9 @@ public final class ExchangeTestContainer implements AutoCloseable {
             return false;
         }
 
-        final LongObjectHashMap<IntLongHashMap> users = new LongObjectHashMap<>();
+        final LongObjectHashMap<LongLongHashMap> users = new LongObjectHashMap<>();
         for (int uid = uidStartIncl; uid < uidStartExcl; uid++) {
-            final IntLongHashMap accounts = new IntLongHashMap();
+            final LongLongHashMap accounts = new LongLongHashMap();
             currencies.forEach(currency -> accounts.put(currency, 10_0000_0000L));
             users.put(uid, accounts);
             if (uid > 100000 && uid % 100000 == 0) {
@@ -353,14 +353,14 @@ public final class ExchangeTestContainer implements AutoCloseable {
 
     public TotalCurrencyBalanceReportResult totalBalanceReport() throws InterruptedException, ExecutionException {
         final TotalCurrencyBalanceReportResult res = api.processReport(new TotalCurrencyBalanceReportQuery(), getRandomTransactionId()).get();
-        final IntLongHashMap openInterestLong = res.getOpenInterestLong();
-        final IntLongHashMap openInterestShort = res.getOpenInterestShort();
+        final LongLongHashMap openInterestLong = res.getOpenInterestLong();
+        final LongLongHashMap openInterestShort = res.getOpenInterestShort();
 //        log.debug("accBal : {}", res.getAccountBalances());
 //        log.debug("fees   : {}", res.getFees());
 //        log.debug("ordBal : {}", res.getOrdersBalances());
 //        log.debug("OpenIntLong: {}", openInterestLong);
 //        log.debug("OpenIntShort: {}", openInterestShort);
-        final IntLongHashMap openInterestDiff = new IntLongHashMap(openInterestLong);
+        final LongLongHashMap openInterestDiff = new LongLongHashMap(openInterestLong);
         openInterestShort.forEachKeyValue((k, v) -> openInterestDiff.addToValue(k, -v));
         if (openInterestDiff.anySatisfy(vol -> vol != 0)) {
             throw new IllegalStateException("Open Interest balance check failed");
