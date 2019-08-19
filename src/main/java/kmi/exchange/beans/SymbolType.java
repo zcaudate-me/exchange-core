@@ -8,7 +8,8 @@ import java.util.Arrays;
 public enum SymbolType {
     CURRENCY_EXCHANGE_PAIR(0),
     FUTURES_CONTRACT(1),
-    OPTION(2);
+    OPTION(2),
+    PREDICTION(3);
 
     private byte code;
 

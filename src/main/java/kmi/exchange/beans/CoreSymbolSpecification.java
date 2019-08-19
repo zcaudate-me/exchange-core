@@ -14,7 +14,7 @@ import java.util.Objects;
 @ToString
 public final class CoreSymbolSpecification implements WriteBytesMarshallable, StateHash {
 
-    public final int symbolId;
+    public final long symbolId;
 
     @NonNull
     public final SymbolType type;
@@ -35,7 +35,7 @@ public final class CoreSymbolSpecification implements WriteBytesMarshallable, St
     // TODO public final int feeCurrency; //  if type=CURRENCY_EXCHANGE_PAIR - should be the same as quoteCurrency
 
     public CoreSymbolSpecification(BytesIn bytes) {
-        this.symbolId = bytes.readInt();
+        this.symbolId = bytes.readLong();
         this.type = SymbolType.of(bytes.readByte());
         this.baseCurrency = bytes.readInt();
         this.quoteCurrency = bytes.readInt();
@@ -67,7 +67,7 @@ public final class CoreSymbolSpecification implements WriteBytesMarshallable, St
 
     @Override
     public void writeMarshallable(BytesOut bytes) {
-        bytes.writeInt(symbolId);
+        bytes.writeLong(symbolId);
         bytes.writeByte(type.getCode());
         bytes.writeInt(baseCurrency);
         bytes.writeInt(quoteCurrency);

@@ -6,7 +6,7 @@ import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.bytes.WriteBytesMarshallable;
 import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.LongHashSet;
 import kmi.exchange.core.Utils;
 
@@ -18,7 +18,7 @@ public final class UserProfile implements WriteBytesMarshallable, StateHash {
     public final long uid;
 
     // symbol -> portfolio records
-    public final IntObjectHashMap<SymbolPortfolioRecord> portfolio;
+    public final LongObjectHashMap<SymbolPortfolioRecord> portfolio;
 
     // set of applied transactionId
     public final LongHashSet externalTransactions;
@@ -39,7 +39,7 @@ public final class UserProfile implements WriteBytesMarshallable, StateHash {
     public UserProfile(long uid) {
         //log.debug("New {}", uid);
         this.uid = uid;
-        this.portfolio = new IntObjectHashMap<>();
+        this.portfolio = new LongObjectHashMap<>();
         this.externalTransactions = new LongHashSet();
         this.accounts = new IntLongHashMap();
     }
@@ -49,7 +49,7 @@ public final class UserProfile implements WriteBytesMarshallable, StateHash {
         this.uid = bytesIn.readLong();
 
         // positions
-        this.portfolio = Utils.readIntHashMap(bytesIn, b -> new SymbolPortfolioRecord(uid, b));
+        this.portfolio = Utils.readLongHashMap(bytesIn, b -> new SymbolPortfolioRecord(uid, b));
 
         // externalTransactions
         this.externalTransactions = Utils.readLongHashSet(bytesIn);
@@ -59,7 +59,7 @@ public final class UserProfile implements WriteBytesMarshallable, StateHash {
     }
 
     public SymbolPortfolioRecord getOrCreatePortfolioRecord(CoreSymbolSpecification spec) {
-        final int symbol = spec.symbolId;
+        final long symbol = spec.symbolId;
         SymbolPortfolioRecord record = portfolio.get(symbol);
         if (record == null) {
             record = new SymbolPortfolioRecord(uid, symbol, spec.quoteCurrency);
@@ -89,7 +89,7 @@ public final class UserProfile implements WriteBytesMarshallable, StateHash {
         bytes.writeLong(uid);
 
         // positions
-        Utils.marshallIntHashMap(portfolio, bytes);
+        Utils.marshallLongHashMap(portfolio, bytes);
 
         // externalTransactions
         Utils.marshallLongHashSet(externalTransactions, bytes);

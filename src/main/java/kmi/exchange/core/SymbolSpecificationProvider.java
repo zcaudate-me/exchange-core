@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.bytes.WriteBytesMarshallable;
-import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongObjectHashMap;
 import kmi.exchange.beans.CoreSymbolSpecification;
 import kmi.exchange.beans.StateHash;
 import kmi.exchange.beans.cmd.CommandResultCode;
@@ -16,14 +16,14 @@ import java.util.Objects;
 public final class SymbolSpecificationProvider implements WriteBytesMarshallable, StateHash {
 
     // symbol->specs
-    private final IntObjectHashMap<CoreSymbolSpecification> symbolSpecs;
+    private final LongObjectHashMap<CoreSymbolSpecification> symbolSpecs;
 
     public SymbolSpecificationProvider() {
-        this.symbolSpecs = new IntObjectHashMap<>();
+        this.symbolSpecs = new LongObjectHashMap<>();
     }
 
     public SymbolSpecificationProvider(BytesIn bytes) {
-        this.symbolSpecs = Utils.readIntHashMap(bytes, CoreSymbolSpecification::new);
+        this.symbolSpecs = Utils.readLongHashMap(bytes, CoreSymbolSpecification::new);
     }
 
 
@@ -42,7 +42,7 @@ public final class SymbolSpecificationProvider implements WriteBytesMarshallable
      * @param symbol
      * @return
      */
-    public CoreSymbolSpecification getSymbolSpecification(int symbol) {
+    public CoreSymbolSpecification getSymbolSpecification(long symbol) {
         return symbolSpecs.get(symbol);
     }
 
@@ -52,7 +52,7 @@ public final class SymbolSpecificationProvider implements WriteBytesMarshallable
      * @param symbol
      * @param spec
      */
-    public void registerSymbol(int symbol, CoreSymbolSpecification spec) {
+    public void registerSymbol(long symbol, CoreSymbolSpecification spec) {
         symbolSpecs.put(symbol, spec);
     }
 
@@ -66,7 +66,7 @@ public final class SymbolSpecificationProvider implements WriteBytesMarshallable
     @Override
     public void writeMarshallable(BytesOut bytes) {
         // write symbolSpecs
-        Utils.marshallIntHashMap(symbolSpecs, bytes);
+        Utils.marshallLongHashMap(symbolSpecs, bytes);
     }
 
     @Override

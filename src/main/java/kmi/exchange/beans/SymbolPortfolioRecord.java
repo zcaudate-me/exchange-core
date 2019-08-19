@@ -15,7 +15,7 @@ public final class SymbolPortfolioRecord implements WriteBytesMarshallable, Stat
 
     public final long uid;
 
-    public final int symbol;
+    public final long symbol;
     public final int currency;
 
     // open positions state (for margin trades only)
@@ -30,7 +30,7 @@ public final class SymbolPortfolioRecord implements WriteBytesMarshallable, Stat
     public long pendingSellSize = 0;
     public long pendingBuySize = 0;
 
-    public SymbolPortfolioRecord(long uid, int symbol, int currency) {
+    public SymbolPortfolioRecord(long uid, long symbol, int currency) {
         this.uid = uid;
 
         this.symbol = symbol;
@@ -213,7 +213,7 @@ public final class SymbolPortfolioRecord implements WriteBytesMarshallable, Stat
 
     @Override
     public void writeMarshallable(BytesOut bytes) {
-        bytes.writeInt(symbol);
+        bytes.writeLong(symbol);
         bytes.writeInt(currency);
         bytes.writeByte((byte) position.getMultiplier());
         bytes.writeLong(openVolume);

@@ -30,7 +30,7 @@ public final class MatchingEngineRouter implements WriteBytesMarshallable, State
     private final BinaryCommandsProcessor binaryCommandsProcessor;
 
     // symbol->OB
-    private final IntObjectHashMap<IOrderBook> orderBooks;
+    private final LongObjectHashMap<IOrderBook> orderBooks;
 
     private final Function<CoreSymbolSpecification, IOrderBook> orderBookFactory;
 
@@ -54,7 +54,7 @@ public final class MatchingEngineRouter implements WriteBytesMarshallable, State
         this.orderBookFactory = orderBookFactory;
 
         if (loadStateId != null) {
-            final Pair<BinaryCommandsProcessor, IntObjectHashMap<IOrderBook>> deserialized = serializationProcessor.loadData(
+            final Pair<BinaryCommandsProcessor, LongObjectHashMap<IOrderBook>> deserialized = serializationProcessor.loadData(
                     loadStateId,
                     ISerializationProcessor.SerializedModuleType.MATCHING_ENGINE_ROUTER,
                     shardId,
@@ -66,7 +66,7 @@ public final class MatchingEngineRouter implements WriteBytesMarshallable, State
                             throw new IllegalStateException("wrong shardMask");
                         }
                         final BinaryCommandsProcessor bcp = new BinaryCommandsProcessor(this::handleBinaryMessage, bytesIn, shardId + 1024);
-                        final IntObjectHashMap<IOrderBook> ob = Utils.readIntHashMap(bytesIn, IOrderBook::create);
+                        final LongObjectHashMap<IOrderBook> ob = Utils.readLongHashMap(bytesIn, IOrderBook::create);
                         return Pair.of(bcp, ob);
                     });
 
@@ -75,7 +75,7 @@ public final class MatchingEngineRouter implements WriteBytesMarshallable, State
 
         } else {
             this.binaryCommandsProcessor = new BinaryCommandsProcessor(this::handleBinaryMessage, shardId + 1024);
-            this.orderBooks = new IntObjectHashMap<>();
+            this.orderBooks = new LongObjectHashMap<>();
         }
     }
 
@@ -115,7 +115,7 @@ public final class MatchingEngineRouter implements WriteBytesMarshallable, State
     private Optional<? extends WriteBytesMarshallable> handleBinaryMessage(Object message) {
         if (message instanceof BatchAddSymbolsCommand) {
             // TODO return status object
-            final IntObjectHashMap<CoreSymbolSpecification> symbols = ((BatchAddSymbolsCommand) message).getSymbols();
+            final LongObjectHashMap<CoreSymbolSpecification> symbols = ((BatchAddSymbolsCommand) message).getSymbols();
             symbols.forEach(this::addSymbol);
             return Optional.empty();
         } else if (message instanceof BatchAddAccountsCommand) {
@@ -193,7 +193,7 @@ public final class MatchingEngineRouter implements WriteBytesMarshallable, State
 
 //        log.debug("symbolSpecification: {}", symbolSpecification);
 
-        final int symbolId = symbolSpecification.symbolId;
+        final long symbolId = symbolSpecification.symbolId;
         if (orderBooks.get(symbolId) != null) {
             return CommandResultCode.MATCHING_ORDER_BOOK_ALREADY_EXISTS;
         } else {
@@ -225,7 +225,7 @@ public final class MatchingEngineRouter implements WriteBytesMarshallable, State
         binaryCommandsProcessor.writeMarshallable(bytes);
 
         // write orderBooks
-        Utils.marshallIntHashMap(orderBooks, bytes);
+        Utils.marshallLongHashMap(orderBooks, bytes);
     }
 
     @Override
