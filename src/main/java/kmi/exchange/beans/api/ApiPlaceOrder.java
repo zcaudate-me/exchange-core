@@ -15,7 +15,7 @@ public final class ApiPlaceOrder extends ApiCommand {
     final public OrderType orderType;
 
     final public long uid;
-    final public int symbol;
+    final public long symbol;
 
     final public long reservePrice;
 

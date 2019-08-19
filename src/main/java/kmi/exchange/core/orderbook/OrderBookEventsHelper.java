@@ -150,11 +150,11 @@ public final class OrderBookEventsHelper {
     }
 
 
-    public static NavigableMap<Integer, Wire> deserializeEvents(final MatcherTradeEvent evtHead) {
-        final Map<Integer, List<MatcherTradeEvent>> sections = MatcherTradeEvent.asList(evtHead).stream()
+    public static NavigableMap<Long, Wire> deserializeEvents(final MatcherTradeEvent evtHead) {
+        final Map<Long, List<MatcherTradeEvent>> sections = MatcherTradeEvent.asList(evtHead).stream()
                 .collect(Collectors.groupingBy(evt -> evt.symbol, Collectors.toList()));
 
-        NavigableMap<Integer, Wire> result = new TreeMap<>();
+        NavigableMap<Long, Wire> result = new TreeMap<>();
 
         sections.forEach((section, events) -> {
             final long[] dataArray = events.stream()

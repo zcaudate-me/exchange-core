@@ -10,6 +10,7 @@ import org.eclipse.collections.api.map.primitive.MutableLongIntMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.LongIntHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongLongHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.LongObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.LongHashSet;
 import kmi.exchange.beans.CoreSymbolSpecification;
@@ -228,6 +229,19 @@ public final class Utils {
         return hashMap;
     }
 
+    public static LongLongHashMap readLongLongHashMap(final BytesIn bytes) {
+        int length = bytes.readInt();
+        final LongLongHashMap hashMap = new LongLongHashMap(length);
+        // TODO shuffle (? performance can be reduced if populating linearly)
+        for (int i = 0; i < length; i++) {
+            long k = bytes.readLong();
+            long v = bytes.readLong();
+            hashMap.put(k, v);
+        }
+        return hashMap;
+    }
+
+
     public static void marshallIntLongHashMap(final MutableIntLongMap hashMap, final BytesOut bytes) {
 
         bytes.writeInt(hashMap.size());
@@ -274,6 +288,18 @@ public final class Utils {
         hashMap.forEachKeyValue((k, v) -> {
             bytes.writeLong(k);
             v.writeMarshallable(bytes);
+        });
+
+    }
+
+
+    public static void marshallLongHashMap(final LongLongHashMap hashMap, final BytesOut bytes) {
+
+        bytes.writeInt(hashMap.size());
+
+        hashMap.forEachKeyValue((k, v) -> {
+            bytes.writeLong(k);
+            bytes.writeLong(v);
         });
 
     }

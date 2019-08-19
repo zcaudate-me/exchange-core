@@ -65,7 +65,7 @@ public final class UserProfileService implements WriteBytesMarshallable, StateHa
      * @param fundingTransactionId
      * @return result code
      */
-    public CommandResultCode balanceAdjustment(final long uid, final int currency, final long amount, final long fundingTransactionId) {
+    public CommandResultCode balanceAdjustment(final long uid, final long currency, final long amount, final long fundingTransactionId) {
 
         final UserProfile userProfile = getUserProfile(uid);
         if (userProfile == null) {

@@ -9,7 +9,9 @@ import net.openhft.chronicle.bytes.BytesMarshallable;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.bytes.WriteBytesMarshallable;
 import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongLongHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.IntObjectHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongObjectHashMap;
 import kmi.exchange.beans.*;
 import kmi.exchange.beans.api.binary.BatchAddAccountsCommand;
 import kmi.exchange.beans.api.binary.BatchAddSymbolsCommand;
@@ -35,8 +37,8 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
     private final SymbolSpecificationProvider symbolSpecificationProvider;
     private final UserProfileService userProfileService;
     private final BinaryCommandsProcessor binaryCommandsProcessor;
-    private final IntObjectHashMap<LastPriceCacheRecord> lastPriceCache;
-    private final IntLongHashMap fees;
+    private final LongObjectHashMap<LastPriceCacheRecord> lastPriceCache;
+    private final LongLongHashMap fees;
 
     // configuration
     private final int shardId;
@@ -56,8 +58,8 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
             this.symbolSpecificationProvider = new SymbolSpecificationProvider();
             this.userProfileService = new UserProfileService();
             this.binaryCommandsProcessor = new BinaryCommandsProcessor(this::handleBinaryMessage, shardId);
-            this.lastPriceCache = new IntObjectHashMap<>();
-            this.fees = new IntLongHashMap();
+            this.lastPriceCache = new LongObjectHashMap<>();
+            this.fees = new LongLongHashMap();
 
         } else {
             // TODO change to creator (simpler init)
@@ -75,8 +77,8 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
                         final SymbolSpecificationProvider symbolSpecificationProvider = new SymbolSpecificationProvider(bytesIn);
                         final UserProfileService userProfileService = new UserProfileService(bytesIn);
                         final BinaryCommandsProcessor binaryCommandsProcessor = new BinaryCommandsProcessor(this::handleBinaryMessage, bytesIn, shardId);
-                        final IntObjectHashMap<LastPriceCacheRecord> lastPriceCache = Utils.readIntHashMap(bytesIn, LastPriceCacheRecord::new);
-                        final IntLongHashMap fees = Utils.readIntLongHashMap(bytesIn);
+                        final LongObjectHashMap<LastPriceCacheRecord> lastPriceCache = Utils.readLongHashMap(bytesIn, LastPriceCacheRecord::new);
+                        final LongLongHashMap fees = Utils.readLongLongHashMap(bytesIn);
                         return new State(symbolSpecificationProvider, userProfileService, binaryCommandsProcessor, lastPriceCache, fees);
                     });
 
@@ -190,7 +192,7 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
 
         if (message instanceof BatchAddSymbolsCommand) {
             // TODO return status object
-            final IntObjectHashMap<CoreSymbolSpecification> symbols = ((BatchAddSymbolsCommand) message).getSymbols();
+            final LongObjectHashMap<CoreSymbolSpecification> symbols = ((BatchAddSymbolsCommand) message).getSymbols();
             symbols.forEach(symbolSpecificationProvider::addSymbol);
             return Optional.empty();
         } else if (message instanceof BatchAddAccountsCommand) {
@@ -222,8 +224,8 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
             case SINGLE_USER_REPORT:
                 return reportSingleUser((SingleUserReportQuery) reportQuery);
 
-            case TOTAL_CURRENCY_BALANCE:
-                return reportGlobalBalance();
+            /*case TOTAL_CURRENCY_BALANCE:
+                return reportGlobalBalance();*/
 
             default:
                 throw new IllegalStateException("Report not implemented");
@@ -245,17 +247,17 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
             return Optional.empty();
         }
     }
-
+/*
     private Optional<TotalCurrencyBalanceReportResult> reportGlobalBalance() {
 
         // prepare fast price cache for profit estimation with some price (exact value is not important, except ask==bid condition)
-        final IntObjectHashMap<LastPriceCacheRecord> dummyLastPriceCache = new IntObjectHashMap<>();
+        final LongObjectHashMap<LastPriceCacheRecord> dummyLastPriceCache = new LongObjectHashMap<>();
         lastPriceCache.forEachKeyValue((s, r) -> dummyLastPriceCache.put(s, r.averagingRecord()));
 
-        final IntLongHashMap currencyBalance = new IntLongHashMap();
+        final LongLongHashMap currencyBalance = new LongLongHashMap();
 
-        final IntLongHashMap symbolOpenInterestLong = new IntLongHashMap();
-        final IntLongHashMap symbolOpenInterestShort = new IntLongHashMap();
+        final LongLongHashMap symbolOpenInterestLong = new LongLongHashMap();
+        final LongLongHashMap symbolOpenInterestShort = new LongLongHashMap();
 
         userProfileService.getUserProfiles().forEach(userProfile -> {
             userProfile.accounts.forEachKeyValue(currencyBalance::addToValue);
@@ -272,9 +274,9 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
             });
         });
 
-        return Optional.of(new TotalCurrencyBalanceReportResult(currencyBalance, new IntLongHashMap(fees), null, symbolOpenInterestLong, symbolOpenInterestShort));
+        return Optional.of(new TotalCurrencyBalanceReportResult(currencyBalance, new LongLongHashMap(fees), null, symbolOpenInterestLong, symbolOpenInterestShort));
     }
-
+*/
     /**
      * Post process command
      *
@@ -354,7 +356,7 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
         long freeFuturesMargin = 0L;
         for (final SymbolPortfolioRecord portfolioRecord : userProfile.portfolio) {
             if (portfolioRecord.currency == currency) {
-                final int recSymbol = portfolioRecord.symbol;
+                final long recSymbol = portfolioRecord.symbol;
                 final CoreSymbolSpecification spec2 = symbolSpecificationProvider.getSymbolSpecification(recSymbol);
                 // add P&L subtract margin
                 freeFuturesMargin += portfolioRecord.estimateProfit(spec2, lastPriceCache.get(recSymbol));
@@ -411,11 +413,11 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
 
         // extra margin is required
 
-        final int symbol = cmd.symbol;
+        final long symbol = cmd.symbol;
         // calculate free margin for all positions same currency
         long freeMargin = 0L;
         for (final SymbolPortfolioRecord portfolioRecord : userProfile.portfolio) {
-            final int recSymbol = portfolioRecord.symbol;
+            final long recSymbol = portfolioRecord.symbol;
             if (recSymbol != symbol) {
                 if (portfolioRecord.currency == spec.quoteCurrency) {
                     final CoreSymbolSpecification spec2 = symbolSpecificationProvider.getSymbolSpecification(recSymbol);
@@ -435,7 +437,7 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
         return newRequiredMarginForSymbol <= userProfile.accounts.get(portfolio.currency) + freeMargin;
     }
 
-    public void handlerRiskRelease(final int symbol,
+    public void handlerRiskRelease(final long symbol,
                                    final L2MarketData marketData,
                                    MatcherTradeEvent mte) {
 
@@ -592,8 +594,8 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
         symbolSpecificationProvider.writeMarshallable(bytes);
         userProfileService.writeMarshallable(bytes);
         binaryCommandsProcessor.writeMarshallable(bytes);
-        Utils.marshallIntHashMap(lastPriceCache, bytes);
-        Utils.marshallIntLongHashMap(fees, bytes);
+        Utils.marshallLongHashMap(lastPriceCache, bytes);
+        // Utils.marshallLongHashMap(fees, bytes);
     }
 
     public void reset() {
@@ -625,7 +627,7 @@ public final class RiskEngine implements WriteBytesMarshallable, StateHash {
         private final SymbolSpecificationProvider symbolSpecificationProvider;
         private final UserProfileService userProfileService;
         private final BinaryCommandsProcessor binaryCommandsProcessor;
-        private final IntObjectHashMap<LastPriceCacheRecord> lastPriceCache;
-        private final IntLongHashMap fees;
+        private final LongObjectHashMap<LastPriceCacheRecord> lastPriceCache;
+        private final LongLongHashMap fees;
     }
 }

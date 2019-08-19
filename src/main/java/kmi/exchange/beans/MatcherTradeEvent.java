@@ -15,7 +15,7 @@ public final class MatcherTradeEvent {
 
     public MatcherEventType eventType; // TRADE, CANCEL or REJECTION (rare)
 
-    public int symbol;
+    public long symbol;
 
     // taker (for TRADE)
     public long activeOrderId;

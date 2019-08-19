@@ -5,7 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.openhft.chronicle.bytes.BytesIn;
 import net.openhft.chronicle.bytes.BytesOut;
 import net.openhft.chronicle.bytes.WriteBytesMarshallable;
-import org.eclipse.collections.impl.map.mutable.primitive.IntLongHashMap;
+import org.eclipse.collections.impl.map.mutable.primitive.LongLongHashMap;
 import org.eclipse.collections.impl.map.mutable.primitive.LongObjectHashMap;
 import org.eclipse.collections.impl.set.mutable.primitive.LongHashSet;
 import kmi.exchange.core.Utils;
@@ -27,7 +27,7 @@ public final class UserProfile implements WriteBytesMarshallable, StateHash {
 
     // currency accounts
     // currency -> balance
-    public final IntLongHashMap accounts;
+    public final LongLongHashMap accounts;
 
 
     // collected from portfolio
@@ -41,7 +41,7 @@ public final class UserProfile implements WriteBytesMarshallable, StateHash {
         this.uid = uid;
         this.portfolio = new LongObjectHashMap<>();
         this.externalTransactions = new LongHashSet();
-        this.accounts = new IntLongHashMap();
+        this.accounts = new LongLongHashMap();
     }
 
     public UserProfile(BytesIn bytesIn) {
@@ -55,7 +55,7 @@ public final class UserProfile implements WriteBytesMarshallable, StateHash {
         this.externalTransactions = Utils.readLongHashSet(bytesIn);
 
         // account balances
-        this.accounts = Utils.readIntLongHashMap(bytesIn);
+        this.accounts = Utils.readLongLongHashMap(bytesIn);
     }
 
     public SymbolPortfolioRecord getOrCreatePortfolioRecord(CoreSymbolSpecification spec) {
@@ -68,7 +68,7 @@ public final class UserProfile implements WriteBytesMarshallable, StateHash {
         return record;
     }
 
-    public SymbolPortfolioRecord getPortfolioRecordOrThrowEx(int symbol) {
+    public SymbolPortfolioRecord getPortfolioRecordOrThrowEx(long symbol) {
         final SymbolPortfolioRecord record = portfolio.get(symbol);
         if (record == null) {
             throw new IllegalStateException("not found portfolio for symbol " + symbol);
@@ -95,7 +95,7 @@ public final class UserProfile implements WriteBytesMarshallable, StateHash {
         Utils.marshallLongHashSet(externalTransactions, bytes);
 
         // account balances
-        Utils.marshallIntLongHashMap(accounts, bytes);
+        Utils.marshallLongHashMap(accounts, bytes);
     }
 
 

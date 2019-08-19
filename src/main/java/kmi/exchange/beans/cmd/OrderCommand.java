@@ -21,7 +21,7 @@ public final class OrderCommand implements IOrder {
     @Getter
     public long orderId;
 
-    public int symbol;
+    public long symbol;
 
     @Getter
     public long price;
