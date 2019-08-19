@@ -167,7 +167,7 @@ public final class ITExchangeCoreIntegration {
 
         try (final ExchangeTestContainer container = new ExchangeTestContainer()) {
             container.initBasicSymbols();
-            container.createUserWithMoney(UID_1, CURRENECY_XBT, 2_000_000); // 2M satoshi (0.02 BTC)
+            container.createUserWithMoney(UID_1, CURRENCY_XBT, 2_000_000); // 2M satoshi (0.02 BTC)
 
             // try submit an order - limit BUY 7 lots, price 300K satoshi (30K x10 step) for each lot 100K szabo
             // should be rejected
@@ -181,11 +181,11 @@ public final class ITExchangeCoreIntegration {
             // verify
             container.validateUserState(
                     UID_1,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_XBT), is(2_000_000L)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_XBT), is(2_000_000L)),
                     orders -> assertTrue(orders.isEmpty()));
 
             // add 100K more
-            container.submitCommandSync(ApiAdjustUserBalance.builder().uid(UID_1).currency(CURRENECY_XBT).amount(100_000).transactionId(2L).build(), CHECK_SUCCESS);
+            container.submitCommandSync(ApiAdjustUserBalance.builder().uid(UID_1).currency(CURRENCY_XBT).amount(100_000).transactionId(2L).build(), CHECK_SUCCESS);
 
             // submit order again - should be placed
             container.submitCommandSync(order101, cmd -> {
@@ -204,10 +204,10 @@ public final class ITExchangeCoreIntegration {
             // verify order placed with correct reserve price and account balance is updated accordingly
             container.validateUserState(
                     UID_1,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_XBT), is(0L)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_XBT), is(0L)),
                     orders -> assertThat(orders.get(101L).price, is(30_000L)));
 
-            container.createUserWithMoney(UID_2, CURRENECY_ETH, 699_999); // 699'999 szabo (<~0.7 ETH)
+            container.createUserWithMoney(UID_2, CURRENCY_ETH, 699_999); // 699'999 szabo (<~0.7 ETH)
             // try submit an order - sell 7 lots, price 300K satoshi (30K x10 step) for each lot 100K szabo
             // should be rejected
             final ApiPlaceOrder order102 = ApiPlaceOrder.builder().uid(UID_2).id(102).price(30_000).size(7).action(ASK).orderType(OrderType.IOC).symbol(SYMBOL_EXCHANGE).build();
@@ -218,11 +218,11 @@ public final class ITExchangeCoreIntegration {
             // verify order is rejected and account balance is not changed
             container.validateUserState(
                     UID_2,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_ETH), is(699_999L)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_ETH), is(699_999L)),
                     orders -> assertTrue(orders.isEmpty()));
 
             // add 1 szabo more
-            container.submitCommandSync(ApiAdjustUserBalance.builder().uid(UID_2).currency(CURRENECY_ETH).amount(1).transactionId(2L).build(), CHECK_SUCCESS);
+            container.submitCommandSync(ApiAdjustUserBalance.builder().uid(UID_2).currency(CURRENCY_ETH).amount(1).transactionId(2L).build(), CHECK_SUCCESS);
 
             // submit order again - should be matched
             container.submitCommandSync(order102, cmd -> {
@@ -240,16 +240,16 @@ public final class ITExchangeCoreIntegration {
             container.validateUserState(
                     UID_2,
                     userProfile -> {
-                        assertThat(userProfile.accounts.get(CURRENECY_XBT), is(2_100_000L));
-                        assertThat(userProfile.accounts.get(CURRENECY_ETH), is(0L));
+                        assertThat(userProfile.accounts.get(CURRENCY_XBT), is(2_100_000L));
+                        assertThat(userProfile.accounts.get(CURRENCY_ETH), is(0L));
                     },
                     orders -> assertTrue(orders.isEmpty()));
 
             container.validateUserState(
                     UID_1,
                     userProfile -> {
-                        assertThat(userProfile.accounts.get(CURRENECY_ETH), is(700_000L));
-                        assertThat(userProfile.accounts.get(CURRENECY_XBT), is(0L));
+                        assertThat(userProfile.accounts.get(CURRENCY_ETH), is(700_000L));
+                        assertThat(userProfile.accounts.get(CURRENCY_XBT), is(0L));
                     },
                     orders -> assertTrue(orders.isEmpty()));
         }
@@ -260,7 +260,7 @@ public final class ITExchangeCoreIntegration {
 
         try (final ExchangeTestContainer container = new ExchangeTestContainer()) {
             container.initBasicSymbols();
-            container.createUserWithMoney(UID_1, CURRENECY_ETH, 100_000_000); // 100M szabo (100 ETH)
+            container.createUserWithMoney(UID_1, CURRENCY_ETH, 100_000_000); // 100M szabo (100 ETH)
 
             // try submit an order - sell 1001 lots, price 300K satoshi (30K x10 step) for each lot 100K szabo
             // should be rejected
@@ -271,7 +271,7 @@ public final class ITExchangeCoreIntegration {
 
             container.validateUserState(
                     UID_1,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_ETH), is(100_000_000L)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_ETH), is(100_000_000L)),
                     orders -> assertTrue(orders.isEmpty()));
 
             // submit order again - should be placed
@@ -292,7 +292,7 @@ public final class ITExchangeCoreIntegration {
 
             container.validateUserState(
                     UID_1,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_ETH), is(0L)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_ETH), is(0L)),
                     orders -> assertTrue(orders.containsKey(202L)));
 
             // move order to higher price - shouldn't be a problem for ASK order
@@ -310,7 +310,7 @@ public final class ITExchangeCoreIntegration {
 
             container.validateUserState(
                     UID_1,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_ETH), is(0L)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_ETH), is(0L)),
                     orders -> assertTrue(orders.containsKey(202L)));
 
 
@@ -329,11 +329,11 @@ public final class ITExchangeCoreIntegration {
 
             container.validateUserState(
                     UID_1,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_ETH), is(0L)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_ETH), is(0L)),
                     orders -> assertTrue(orders.containsKey(202L)));
 
             // create user
-            container.createUserWithMoney(UID_2, CURRENECY_XBT, 94_000_000); // 94M satoshi (0.94 BTC)
+            container.createUserWithMoney(UID_2, CURRENCY_XBT, 94_000_000); // 94M satoshi (0.94 BTC)
 
             // try submit order with reservePrice above funds limit - rejected
             container.submitCommandSync(
@@ -344,7 +344,7 @@ public final class ITExchangeCoreIntegration {
 
             container.validateUserState(
                     UID_2,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_XBT), is(94_000_000L)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_XBT), is(94_000_000L)),
                     orders -> assertTrue(orders.isEmpty()));
 
             // submit order with reservePrice below funds limit - should be placed
@@ -370,7 +370,7 @@ public final class ITExchangeCoreIntegration {
 
             container.validateUserState(
                     UID_2,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_XBT), is(ethUid2)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_XBT), is(ethUid2)),
                     orders -> assertTrue(orders.containsKey(203L)));
 
             // move order to lower price - shouldn't be a problem for BID order
@@ -388,7 +388,7 @@ public final class ITExchangeCoreIntegration {
 
             container.validateUserState(
                     UID_2,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_XBT), is(ethUid2)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_XBT), is(ethUid2)),
                     orders -> assertThat(orders.get(203L).price, is(15_000L)));
 
             // move order to higher price (above limit) - should be rejected
@@ -400,7 +400,7 @@ public final class ITExchangeCoreIntegration {
 
             container.validateUserState(
                     UID_2,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_XBT), is(ethUid2)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_XBT), is(ethUid2)),
                     orders -> assertThat(orders.get(203L).price, is(15_000L)));
 
             // move order to higher price (equals limit) - should be accepted
@@ -418,7 +418,7 @@ public final class ITExchangeCoreIntegration {
 
             container.validateUserState(
                     UID_2,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_XBT), is(ethUid2)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_XBT), is(ethUid2)),
                     orders -> assertThat(orders.get(203L).price, is(18_500L)));
 
             // set second order price to 17'500
@@ -430,7 +430,7 @@ public final class ITExchangeCoreIntegration {
 
             container.validateUserState(
                     UID_2,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_XBT), is(ethUid2)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_XBT), is(ethUid2)),
                     orders -> assertThat(orders.get(203L).price, is(17_500L)));
 
             // move ASK order to lower price 16'900 so it will trigger trades (by maker's price 17_500)
@@ -462,8 +462,8 @@ public final class ITExchangeCoreIntegration {
             container.validateUserState(
                     UID_1,
                     userProfile -> {
-                        assertThat(userProfile.accounts.get(CURRENECY_XBT), is(87_500_000L));
-                        assertThat(userProfile.accounts.get(CURRENECY_ETH), is(0L));
+                        assertThat(userProfile.accounts.get(CURRENCY_XBT), is(87_500_000L));
+                        assertThat(userProfile.accounts.get(CURRENCY_ETH), is(0L));
                     },
                     orders -> assertThat(orders.get(202L).filled, is(500L)));
 
@@ -471,8 +471,8 @@ public final class ITExchangeCoreIntegration {
             container.validateUserState(
                     UID_2,
                     userProfile -> {
-                        assertThat(userProfile.accounts.get(CURRENECY_XBT), is(6_500_000L));
-                        assertThat(userProfile.accounts.get(CURRENECY_ETH), is(50_000_000L));
+                        assertThat(userProfile.accounts.get(CURRENCY_XBT), is(6_500_000L));
+                        assertThat(userProfile.accounts.get(CURRENCY_ETH), is(50_000_000L));
                     },
                     orders -> assertTrue(orders.isEmpty()));
 
@@ -498,8 +498,8 @@ public final class ITExchangeCoreIntegration {
             container.validateUserState(
                     UID_1,
                     userProfile -> {
-                        assertThat(userProfile.accounts.get(CURRENECY_XBT), is(87_500_000L));
-                        assertThat(userProfile.accounts.get(CURRENECY_ETH), is(50_000_000L));
+                        assertThat(userProfile.accounts.get(CURRENCY_XBT), is(87_500_000L));
+                        assertThat(userProfile.accounts.get(CURRENCY_ETH), is(50_000_000L));
                     },
                     orders -> assertTrue(orders.isEmpty()));
         }
@@ -512,7 +512,7 @@ public final class ITExchangeCoreIntegration {
             container.initBasicSymbols();
 
             // create user
-            container.createUserWithMoney(UID_2, CURRENECY_XBT, 94_000_000); // 94M satoshi (0.94 BTC)
+            container.createUserWithMoney(UID_2, CURRENCY_XBT, 94_000_000); // 94M satoshi (0.94 BTC)
 
             // submit order with reservePrice below funds limit - should be placed
             container.submitCommandSync(
@@ -524,7 +524,7 @@ public final class ITExchangeCoreIntegration {
             // verify order placed with correct reserve price and account balance is updated accordingly
             container.validateUserState(
                     UID_2,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_XBT), is(94_000_000L - 18_500 * 500 * SYMBOLSPEC_ETH_XBT.getQuoteScaleK())),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_XBT), is(94_000_000L - 18_500 * 500 * SYMBOLSPEC_ETH_XBT.getQuoteScaleK())),
                     orders -> assertThat(orders.get(203L).reserveBidPrice, is(18_500L)));
 
             // cancel remaining order
@@ -549,7 +549,7 @@ public final class ITExchangeCoreIntegration {
             // verify that all 94M satoshi were returned back
             container.validateUserState(
                     UID_2,
-                    userProfile -> assertThat(userProfile.accounts.get(CURRENECY_XBT), is(94_000_000L)),
+                    userProfile -> assertThat(userProfile.accounts.get(CURRENCY_XBT), is(94_000_000L)),
                     orders -> assertTrue(orders.isEmpty()));
         }
     }

@@ -106,14 +106,14 @@ public final class ExchangeTestContainer implements AutoCloseable {
         final List<ApiCommand> cmds = new ArrayList<>();
 
         cmds.add(ApiAddUser.builder().uid(UID_1).build());
-        cmds.add(ApiAdjustUserBalance.builder().uid(UID_1).transactionId(1L).amount(10_000_00L).currency(CURRENECY_USD).build());
-        cmds.add(ApiAdjustUserBalance.builder().uid(UID_1).transactionId(2L).amount(1_0000_0000L).currency(CURRENECY_XBT).build());
-        cmds.add(ApiAdjustUserBalance.builder().uid(UID_1).transactionId(3L).amount(1_0000_0000L).currency(CURRENECY_ETH).build());
+        cmds.add(ApiAdjustUserBalance.builder().uid(UID_1).transactionId(1L).amount(10_000_00L).currency(CURRENCY_USD).build());
+        cmds.add(ApiAdjustUserBalance.builder().uid(UID_1).transactionId(2L).amount(1_0000_0000L).currency(CURRENCY_XBT).build());
+        cmds.add(ApiAdjustUserBalance.builder().uid(UID_1).transactionId(3L).amount(1_0000_0000L).currency(CURRENCY_ETH).build());
 
         cmds.add(ApiAddUser.builder().uid(UID_2).build());
-        cmds.add(ApiAdjustUserBalance.builder().uid(UID_2).transactionId(1L).amount(20_000_00L).currency(CURRENECY_USD).build());
-        cmds.add(ApiAdjustUserBalance.builder().uid(UID_2).transactionId(2L).amount(1_0000_0000L).currency(CURRENECY_XBT).build());
-        cmds.add(ApiAdjustUserBalance.builder().uid(UID_2).transactionId(3L).amount(1_0000_0000L).currency(CURRENECY_ETH).build());
+        cmds.add(ApiAdjustUserBalance.builder().uid(UID_2).transactionId(1L).amount(20_000_00L).currency(CURRENCY_USD).build());
+        cmds.add(ApiAdjustUserBalance.builder().uid(UID_2).transactionId(2L).amount(1_0000_0000L).currency(CURRENCY_XBT).build());
+        cmds.add(ApiAdjustUserBalance.builder().uid(UID_2).transactionId(3L).amount(1_0000_0000L).currency(CURRENCY_ETH).build());
 
         submitCommandsSync(cmds);
     }
