@@ -9,7 +9,7 @@ public final class ApiCancelOrder extends ApiCommand {
     public final long id;
 
     public final long uid;
-    public final int symbol;
+    public final long symbol;
 
     @Override
     public String toString() {

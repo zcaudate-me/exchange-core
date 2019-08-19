@@ -65,7 +65,7 @@ public final class TestOrdersGenerator {
 
         final double[] distribution = createWeightedDistribution(coreSymbolSpecifications.size());
         int quotaLeft = totalTransactionsNumber;
-        final Map<Integer, CompletableFuture<GenResult>> futures = new HashMap<>();
+        final Map<Long, CompletableFuture<GenResult>> futures = new HashMap<>();
 
         final LongConsumer sharedProgressLogger = createAsyncProgressLogger(totalTransactionsNumber);
 
@@ -88,7 +88,7 @@ public final class TestOrdersGenerator {
 
         //log.debug("stat: {}", stat);
 
-        final Map<Integer, GenResult> genResults = new HashMap<>();
+        final Map<Long, GenResult> genResults = new HashMap<>();
         futures.forEach((symbol, future) -> {
             try {
                 genResults.put(symbol, future.get());
@@ -149,7 +149,7 @@ public final class TestOrdersGenerator {
             final int targetOrderBookOrders,
             final int numUsers,
             final UnaryOperator<Integer> uidMapper,
-            final int symbol,
+            final long symbol,
             final boolean enableSlidingPrice,
             final LongConsumer asyncProgressConsumer) {
 
@@ -466,7 +466,7 @@ public final class TestOrdersGenerator {
         log.debug("cancel: {} ({}%)", counterCancel, (float) counterCancel / (float) commandsListSize * 100.0f);
         log.debug("move: {} ({}%)", counterMove, (float) counterMove / (float) commandsListSize * 100.0f);
 
-        final Map<Integer, Long> perSymbols = allCommands.stream().skip(readyAtSequenceApproximate).collect(Collectors.groupingBy(cmd -> cmd.symbol, Collectors.counting()));
+        final Map<Long, Long> perSymbols = allCommands.stream().skip(readyAtSequenceApproximate).collect(Collectors.groupingBy(cmd -> cmd.symbol, Collectors.counting()));
         final LongSummaryStatistics symbolStat = perSymbols.values().stream().collect(Collectors.summarizingLong(n -> n));
         log.debug("max commands per symbol: {} ({}%)", symbolStat.getMax(), (float) symbolStat.getMax() / (float) commandsListSize * 100.0f);
         log.debug("avg commands per symbol: {} ({}%)", symbolStat.getAverage(), (float) symbolStat.getAverage() / (float) commandsListSize * 100.0f);
@@ -485,7 +485,7 @@ public final class TestOrdersGenerator {
     @Builder
     @Getter
     public static class MultiSymbolGenResult {
-        final Map<Integer, TestOrdersGenerator.GenResult> genResults;
+        final Map<Long, TestOrdersGenerator.GenResult> genResults;
         final List<ApiCommand> apiCommandsFill;
         final List<ApiCommand> apiCommandsBenchmark;
     }

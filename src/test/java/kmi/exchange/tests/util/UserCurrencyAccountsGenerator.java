@@ -115,11 +115,11 @@ public final class UserCurrencyAccountsGenerator {
     }
 
 
-    public static int[] createUserListForSymbol(final List<BitSet> users2currencies, final CoreSymbolSpecification spec, int symbolMessagesExpected) {
+    public static int[] createUserListForSymbol(final List<BitSet> users2currencies, final CoreSymbolSpecification spec, long symbolMessagesExpected) {
 
         // we would prefer to choose from same number of users as number of messages to be generated in tests
         // at least 2 users are required, but no more than half of all users provided
-        int numUsersToSelect = Math.min(users2currencies.size(), Math.max(2, symbolMessagesExpected / 5));
+        long numUsersToSelect = Math.min(users2currencies.size(), Math.max(2, symbolMessagesExpected / 5));
 
         final ArrayList<Integer> uids = new ArrayList<>();
         final Random rand = new Random(spec.symbolId);

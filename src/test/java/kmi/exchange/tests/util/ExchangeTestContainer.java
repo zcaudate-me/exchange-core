@@ -313,7 +313,7 @@ public final class ExchangeTestContainer implements AutoCloseable {
         };
     }
 
-    public L2MarketData requestCurrentOrderBook(final int symbol) {
+    public L2MarketData requestCurrentOrderBook(final long symbol) {
         BlockingQueue<OrderCommand> queue = attachNewConsumerQueue();
         api.submitCommand(ApiOrderBookRequest.builder().symbol(symbol).size(-1).build());
         OrderCommand orderBookCmd = waitForOrderCommands(queue, 1).get(0);

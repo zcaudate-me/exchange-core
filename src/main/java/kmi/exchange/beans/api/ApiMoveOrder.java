@@ -11,7 +11,7 @@ public final class ApiMoveOrder extends ApiCommand {
     public long newPrice;
 
     public long uid;
-    public int symbol;
+    public long symbol;
 
     @Override
     public String toString() {

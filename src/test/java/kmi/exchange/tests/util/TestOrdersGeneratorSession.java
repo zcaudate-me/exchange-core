@@ -18,7 +18,7 @@ public final class TestOrdersGeneratorSession {
     public final int numUsers;
     public final UnaryOperator<Integer> uidMapper;
 
-    public final int symbol;
+    public final long symbol;
 
     public final Random rand;
 
@@ -53,7 +53,7 @@ public final class TestOrdersGeneratorSession {
 
 //    public SingleWriterRecorder hdrRecorder = new SingleWriterRecorder(Integer.MAX_VALUE, 2);
 
-    public TestOrdersGeneratorSession(IOrderBook orderBook, int targetOrderBookOrders, long priceDeviation, int numUsers, UnaryOperator<Integer> uidMapper, int symbol, long centralPrice, boolean enableSlidingPrice) {
+    public TestOrdersGeneratorSession(IOrderBook orderBook, int targetOrderBookOrders, long priceDeviation, int numUsers, UnaryOperator<Integer> uidMapper, long symbol, long centralPrice, boolean enableSlidingPrice) {
         this.orderBook = orderBook;
         this.targetOrderBookOrders = targetOrderBookOrders;
         this.priceDeviation = priceDeviation;

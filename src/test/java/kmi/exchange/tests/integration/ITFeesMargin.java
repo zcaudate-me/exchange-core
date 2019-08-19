@@ -25,7 +25,7 @@ public final class ITFeesMargin {
 
     private final long makerFee = TestConstants.SYMBOLSPECFEE_USD_JPY.makerFee;
     private final long takerFee = TestConstants.SYMBOLSPECFEE_USD_JPY.takerFee;
-    private final int symbolId = TestConstants.SYMBOLSPECFEE_USD_JPY.symbolId;
+    private final long symbolId = TestConstants.SYMBOLSPECFEE_USD_JPY.symbolId;
 
     @Test(timeout = 10_000)
     public void shouldProcessFees_AskGtcMakerPartial_BidIocTaker() throws Exception {

@@ -6,7 +6,7 @@ import lombok.Builder;
 @Builder
 public final class ApiOrderBookRequest extends ApiCommand {
 
-    final public int symbol;
+    final public long symbol;
 
     final public int size;
 
